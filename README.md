@@ -23,41 +23,17 @@ sudo adduser \
   --group --disabled-password \
   --home /home/u0txt \
   u0txt
-sudo mv txt /home/u0txt
+sudo rsync txt /home/u0txt
 sudo chown -R u0txt:u0txt /home/u0txt/txt
 ```
 
 ```text
-# =========================
-# u0txt systemd service configuration
-#
-# /home/u0txt/u0txt.service
-# sudo ln -s /home/u0txt/u0txt.service /lib/systemd/system/u0txt.service
-# =========================
-
-[Unit]
-Description=A high performance command line pastebin
-After=nginx.service
-
-[Service]
-Type=simple
-User=u0txt
-Group=u0txt
-Restart=on-failure
-Environment=MIX_ENV=prod
-Environment=LANG=en_US.UTF-8
-
-WorkingDirectory=/home/u0txt
-ExecStart=/home/u0txt/txt/rel/u0txt/bin/u0txt start
-ExecStop=/home/u0txt/txt/rel/u0txt/bin/u0txt stop
-
-[Install]
-WantedBy=multi-user.target
-```
-
-```bash
-sudo systemctl enable u0txt
-sudo systemctl start u0txt
+# /etc/supervisor/supervisord.conf
+[program:u0txt]
+user=u0txt
+directory=/home/u0txt
+command=/home/u0txt/txt/rel/u0txt/bin/u0txt start
+autostart=true
 ```
 
 ```text
