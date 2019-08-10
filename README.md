@@ -9,13 +9,8 @@ mix run --no-halt
 
 ## Deployment
 
-This section is here for personal documentation and is not generic.
-
+This section is here for personal documentation and is not generic. Build from source on deployed machine due to `beam.smp: error while loading shared libraries: libtinfo.so.6: cannot open shared object file: No such file or directory`
 ```bash
-MIX_ENV=prod release
-scp -r _build/prod rac:~/txt
-ssh rac
-
 sudo adduser \
   --system \
   --shell /bin/bash \
@@ -23,8 +18,8 @@ sudo adduser \
   --group --disabled-password \
   --home /home/u0txt \
   u0txt
-sudo rsync txt /home/u0txt
-sudo chown -R u0txt:u0txt /home/u0txt/txt
+# as u0txt
+MIX_ENV=prod mix release
 ```
 
 ```text
@@ -32,7 +27,7 @@ sudo chown -R u0txt:u0txt /home/u0txt/txt
 [program:u0txt]
 user=u0txt
 directory=/home/u0txt
-command=/home/u0txt/txt/rel/u0txt/bin/u0txt start
+command=/home/u0txt/txt/_build/prod/rel/u0txt/bin/u0txt start
 autostart=true
 ```
 
