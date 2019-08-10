@@ -2,7 +2,7 @@ defmodule U0txt.Endpoint do
   @moduledoc """
   A Plug responsible for logging request info, matching routes, and dispatching responses.
   """
-  @idlen 6
+  @idlen 4
   @url "https://txt.udia.ca"
   # @url "http://localhost:4001" # for development
   @key "txt"

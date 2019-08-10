@@ -35,7 +35,6 @@ defmodule U0txt.EndpointTest do
     path = conn.resp_body
       |> String.replace("\n", "")
       |> String.replace("https://txt.udia.ca", "")
-    assert String.length(path) == 7
 
     conn = conn(:get, path)
     conn = U0txt.Endpoint.call(conn, @opts)
