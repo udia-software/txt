@@ -20,6 +20,6 @@ defmodule U0txt.MixProject do
   end
 
   defp deps do
-    [{:plug_cowboy, "~> 2.0"}]
+    [{:plug_cowboy, "~> 2.0"}, {:distillery, "~> 2.1"}]
   end
 end

@@ -9,8 +9,19 @@ mix run --no-halt
 
 ## Deployment
 
-This section is here for personal documentation and is not generic. Build from source on deployed machine due to `beam.smp: error while loading shared libraries: libtinfo.so.6: cannot open shared object file: No such file or directory`
+This section is here for personal documentation and is not generic.
 ```bash
+# build docker image
+docker build -t elixir-ubuntu:latest .
+# build application binary release
+docker run -v $(pwd):/opt/build --rm -it elixir-ubuntu:latest /opt/build/bin/build.sh
+# copy artifact over to prod server
+scp rel/artifacts/u0txt-1.0.0.tar.gz rac:
+ssh rac
+mv u0txt-1.0.0.tar.gz /mnt/rose
+cd /mnt/rose
+mkdir -p u0txt
+tar -xzvf u0txt-1.0.0.tar.gz -C u0txt
 sudo adduser \
   --system \
   --shell /bin/bash \
@@ -18,17 +29,36 @@ sudo adduser \
   --group --disabled-password \
   --home /home/u0txt \
   u0txt
-# as u0txt
-MIX_ENV=prod mix release
+sudo usermod -aG u0txt alexander
+sudo chmod :u0txt -R /mnt/rose
+sudo chown 770 -R /mnt/rose
 ```
 
 ```text
-# /etc/supervisor/supervisord.conf
-[program:u0txt]
-user=u0txt
-directory=/home/u0txt
-command=/home/u0txt/txt/_build/prod/rel/u0txt/bin/u0txt start
-autostart=true
+# /mnt/rose/u0txt.service 
+[Unit]
+Description=u0txt
+After=network.target
+
+[Service]
+Type=forking
+User=u0txt
+Group=u0txt
+WorkingDirectory=/mnt/rose/u0txt
+ExecStart=/mnt/rose/u0txt/bin/u0txt start
+ExecStop=/mnt/rose/u0txt/bin/u0txt stop
+PIDFile=/mnt/rose/u0txt/u0txt.pid
+Restart=on-failure
+RestartSec=5
+Environment=PORT=4004
+Environment=LANG=en_US.UTF-8
+Environment=PIDFILE=/mnt/rose/u0txt/u0txt.pid
+SyslogIdentifier=u0txt
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
+# symlink to /etc/systemd/system, then run sudo systemctl enable u0txt, systemctl start u0txt
 ```
 
 ```text

@@ -69,11 +69,13 @@ SEE ALSO
         :mnesia.transaction(fn -> :mnesia.write({:txt, id, txt}) end)
 
         case Map.fetch(conn.body_params, "web") do
-          {:ok, "true"} -> 
+          {:ok, "true"} ->
             conn
-              |> put_resp_header("Location", "#{@url}/#{id}")
-              |> send_resp(302, "#{@url}/#{id}")
-          _ -> send_resp(conn, 200, "#{@url}/#{id}\n")
+            |> put_resp_header("Location", "#{@url}/#{id}")
+            |> send_resp(302, "#{@url}/#{id}")
+
+          _ ->
+            send_resp(conn, 200, "#{@url}/#{id}\n")
         end
 
       :error ->

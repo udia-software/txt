@@ -24,3 +24,6 @@ u0txt-*.tar
 
 # ignore mnesia node files
 Mnesia.*
+.hex
+.mix
+rel/artifacts

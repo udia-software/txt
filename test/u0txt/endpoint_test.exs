@@ -14,7 +14,9 @@ defmodule U0txt.EndpointTest do
     # Assert the response
     assert conn.state == :sent
     assert conn.status == 200
-    assert conn.resp_body == "<!DOCTYPE HTML>\n<html lang=\"en\">\n<head><title>u0txt</title>\n<meta name=\"description\" content=\"u0txt: ommand line pastebin\"/></head>\n<body><pre>            txt.udia.ca\nNAME:\n  u0txt: command line pastebin.\n\nUSAGE:\n  &lt;cmd&gt; | curl -F 'txt=&lt;-' https://txt.udia.ca\n  or upload from web:\n<form action=\"/\" method=\"POST\"><input name=\"web\" type=\"hidden\" value=\"true\">\n<textarea name=\"txt\" cols=\"60\" rows=\"20\"></textarea>\n<br><input type=\"submit\" value=\"Submit\" /></form>\n\nDESCRIPTION\n  I wanted to write my own text pastebin using Elixir/Erlang and Mnesia.\n\nEXAMPLES\n  ~$ cat yourfile | curl -F 'txt=<-' https://txt.udia.ca\n  https://txt.udia.ca/MOJV\n  ~$ firefox https://txt.udia.ca/MOJV\n\n  Add this to your .*rc file:\n\n  alias txt=\"\\\n    sed -r 's/\\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' \\\n    | curl -F 'txt=<-' https://txt.udia.ca\"\n\n  Now you can pipe directly into txt! Sed removes colours.\n\nSOURCE CODE\n  https://github.com/udia-software/txt\n\nSEE ALSO\n  https://txt.t0.vc/\n</pre></body></html>"
+
+    assert conn.resp_body ==
+             "<!DOCTYPE HTML>\n<html lang=\"en\">\n<head><title>u0txt</title>\n<meta name=\"description\" content=\"u0txt: ommand line pastebin\"/></head>\n<body><pre>            txt.udia.ca\nNAME:\n  u0txt: command line pastebin.\n\nUSAGE:\n  &lt;cmd&gt; | curl -F 'txt=&lt;-' https://txt.udia.ca\n  or upload from web:\n<form action=\"/\" method=\"POST\"><input name=\"web\" type=\"hidden\" value=\"true\">\n<textarea name=\"txt\" cols=\"60\" rows=\"20\"></textarea>\n<br><input type=\"submit\" value=\"Submit\" /></form>\n\nDESCRIPTION\n  I wanted to write my own text pastebin using Elixir/Erlang and Mnesia.\n\nEXAMPLES\n  ~$ cat yourfile | curl -F 'txt=<-' https://txt.udia.ca\n  https://txt.udia.ca/MOJV\n  ~$ firefox https://txt.udia.ca/MOJV\n\n  Add this to your .*rc file:\n\n  alias txt=\"\\\n    sed -r 's/\\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' \\\n    | curl -F 'txt=<-' https://txt.udia.ca\"\n\n  Now you can pipe directly into txt! Sed removes colours.\n\nSOURCE CODE\n  https://github.com/udia-software/txt\n\nSEE ALSO\n  https://txt.t0.vc/\n</pre></body></html>"
   end
 
   test "it handles bad posts" do
@@ -32,7 +34,9 @@ defmodule U0txt.EndpointTest do
 
     assert conn.state == :sent
     assert conn.status == 200
-    path = conn.resp_body
+
+    path =
+      conn.resp_body
       |> String.replace("\n", "")
       |> String.replace("https://txt.udia.ca", "")
 
