@@ -3,9 +3,8 @@ defmodule U0txt.Endpoint do
   A Plug responsible for logging request info, matching routes, and dispatching responses.
   """
   @idlen 4
-  @url "https://txt.udia.ca"
-  # @url "http://localhost:4001" # for development
   @key "txt"
+  @url Application.get_env(:u0txt, :url)
 
   @desc "            txt.udia.ca
 NAME:
@@ -14,7 +13,7 @@ NAME:
 USAGE:
   &lt;cmd&gt; | curl -F '#{@key}=&lt;-' #{@url}
   or upload from web:
-<form action=\"/\" method=\"POST\"><input name=\"web\" type=\"hidden\" value=\"true\">
+<form action=\"/\" method=\"POST\" accept-charset=\"UTF-8\"><input name=\"web\" type=\"hidden\" value=\"true\">
 <textarea name=\"#{@key}\" cols=\"60\" rows=\"20\"></textarea>
 <br><input type=\"submit\" value=\"Submit\" /></form>
 
@@ -43,7 +42,7 @@ SEE ALSO
   @home "<!DOCTYPE HTML>
 <html lang=\"en\">
 <head><title>u0txt</title>
-<meta name=\"description\" content=\"u0txt: ommand line pastebin\"/></head>
+<meta name=\"description\" content=\"u0txt: command line pastebin\"/></head>
 <body><pre>#{@desc}</pre></body></html>"
 
   use Plug.Router
@@ -87,8 +86,13 @@ SEE ALSO
     {:atomic, set} = :mnesia.transaction(fn -> :mnesia.read(:txt, id) end)
 
     case set do
-      [{:txt, ^id, body}] -> send_resp(conn, 200, "#{body}")
-      _ -> send_resp(conn, 404, "NOT FOUND")
+      [{:txt, ^id, body}] ->
+        conn
+        |> put_resp_header("content-type", "text/plain; charset=utf-8")
+        |> send_resp(200, body)
+
+      _ ->
+        send_resp(conn, 404, "NOT FOUND")
     end
   end
 
