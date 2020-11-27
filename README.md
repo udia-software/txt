@@ -16,12 +16,12 @@ docker build -t elixir-ubuntu:latest .
 # build application binary release
 docker run -v $(pwd):/opt/build --rm -it elixir-ubuntu:latest /opt/build/bin/build.sh
 # copy artifact over to prod server
-scp rel/artifacts/u0txt-1.0.0.tar.gz rac:
+scp rel/artifacts/u0txt-*.tar.gz rac:
 ssh rac
-mv u0txt-1.0.0.tar.gz /mnt/rose
+mv u0txt-*.tar.gz /mnt/rose
 cd /mnt/rose
 mkdir -p u0txt
-tar -xzvf u0txt-1.0.0.tar.gz -C u0txt
+tar -xzvf u0txt-*.tar.gz -C u0txt
 sudo adduser \
   --system \
   --shell /bin/bash \
